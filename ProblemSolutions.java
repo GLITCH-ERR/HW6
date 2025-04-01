@@ -2,7 +2,7 @@
 /******************************************************************
  *
  *   YOUR NAME / SECTION NUMBER
- *
+ *     Philip Garbis - 002
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
  *   Framework for these methods.
@@ -68,7 +68,21 @@ public class ProblemSolutions {
       //
       // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
       //
-      return -1;
+      
+      PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder()); // Max heap to prioritize heavier boulders
+      for (int boulder : boulders) {
+        pq.add(boulder);
+      }
+        
+      while (pq.size() > 1) {
+        int first = pq.poll();  // Heaviest boulder
+        int second = pq.poll(); // Second heaviest boulder
+        if (first != second) {
+            pq.add(first - second); // Add the difference back if not equal
+        }
+      }
+        
+      return pq.isEmpty() ? 0 : pq.peek(); // Return remaining boulder weight or 0
   }
 
 
@@ -94,8 +108,19 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
+        
+        HashSet<String> seen = new HashSet<>(); // Tracks unique strings
+        HashSet<String> duplicates = new HashSet<>(); // Stores duplicates
+        for (String s : input) {
+            if (!seen.add(s)) { // If already in "seen", it's a duplicate
+                duplicates.add(s);
+            }
+        }
+        ArrayList<String> result = new ArrayList<>(duplicates);
+        Collections.sort(result); // Sort duplicates lexicographically
+        return result;
 
+        // Make sure result is sorted in ascending order
     }
 
 
@@ -134,6 +159,20 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+        
+        HashSet<Integer> seen = new HashSet<>(); // Tracks numbers encountered
+        TreeSet<String> pairs = new TreeSet<>(); // Stores unique pairs in sorted order
+        for (int num : input) {
+            int complement = k - num;
+            if (seen.contains(complement)) { // Check if complement exists
+                int small = Math.min(num, complement);
+                int large = Math.max(num, complement);
+                pairs.add("(" + small + ", " + large + ")"); // Store pair in sorted order
+            }
+            seen.add(num); // Mark current number as seen
+        }
+        return new ArrayList<>(pairs); // Convert to list before returning 
+        
+        // Make sure returned lists is sorted as indicated above
     }
 }
